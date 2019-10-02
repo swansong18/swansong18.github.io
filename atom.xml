@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2019-09-28T12:21:32.887Z</updated>
+  <updated>2019-10-02T14:26:06.417Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -17,23 +17,29 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
-    <title>WEIKANG&#39;S BLOG</title>
-    <link href="http://yoursite.com/2019/09/21/hello-world/"/>
-    <id>http://yoursite.com/2019/09/21/hello-world/</id>
-    <published>2019-09-21T04:42:31.959Z</published>
-    <updated>2019-09-28T12:21:32.887Z</updated>
+    <title>开站首篇</title>
+    <link href="http://yoursite.com/2019/10/02/%E5%BC%80%E7%AB%99%E9%A6%96%E7%AF%87/"/>
+    <id>http://yoursite.com/2019/10/02/开站首篇/</id>
+    <published>2019-10-02T13:57:17.000Z</published>
+    <updated>2019-10-02T14:26:06.417Z</updated>
     
-    <content type="html"><![CDATA[<p>Welcome to <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="noopener">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="noopener">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="noopener">GitHub</a>.</p><h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">"My New Post"</span></span><br></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="noopener">Writing</a></p><h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="noopener">Server</a></p><h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="noopener">Generating</a></p><h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/deployment.html" target="_blank" rel="noopener">Deployment</a></p>]]></content>
+    <content type="html"><![CDATA[<p>本站开设于2019年国庆之际。</p><p>网站的诸多设置还有很多没调整完善，但还是先匆匆开个头。</p><p>我将这个网站大致定位为自己的个人博客，将会主要包含以下几方面的内容：</p><ol><li><strong>个人认为比较有意义的学习经验</strong>。<br>如今是遇事不决问搜索引擎的年代，但搜索引擎还远远不够万能。当你被一个问题所困时，一篇个人博主的优质solution有如天降甘霖。因此我也试图记录下一些有用的东西供大家参考。<br>这也是一个促进自己学习的过程，毕竟只有自己真正做成了某件事/解决了某个问题才能有的可写。（<s>换句话说，如果犯懒了就没得可写</s>）</li><li><strong>我自己的一些思考</strong><br>其实就是满足自己有时想写点东西的欲望，虽然自知写作水平拙劣，但随便写写自我满足一下也足够了。我了解的或者关心的内容或许都会写。</li><li><strong>实用的资源整理</strong><br>网上能搜到的东西质量参差不齐，整理/收藏优质内容也是一件有意义的事情。</li></ol><p>时值国庆，整个北京都处在重大活动的氛围之中。我可能是个比较“冷”的人，既没有“敢教日月换新天”的豪情壮志，也没有世界一流大学“为祖国健康工作五十年”的奉献精神。不过身边很多朋友都用不同的方式参与了这场盛大的庆典，付出了很多努力，我对他们由衷赞赏。对于每一位有着崇高理想并为之奋斗的人，我由衷的敬佩。</p><p>节日是让人们“俱怀逸兴壮思飞”的特殊日子，再激昂的口号也都要回归雄关漫道才是正途。于我而言，能为他人谋些福利，便足以为乐事。</p><p>愿与各位朋友相约三十年后，再看大好山河。</p><p><em>写于2019年国庆</em></p>]]></content>
     
     <summary type="html">
     
       
       
-        &lt;p&gt;Welcome to &lt;a href=&quot;https://hexo.io/&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;Hexo&lt;/a&gt;! This is your very first post. Check &lt;a href=&quot;https://hexo.
+        &lt;p&gt;本站开设于2019年国庆之际。&lt;/p&gt;
+&lt;p&gt;网站的诸多设置还有很多没调整完善，但还是先匆匆开个头。&lt;/p&gt;
+&lt;p&gt;我将这个网站大致定位为自己的个人博客，将会主要包含以下几方面的内容：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;个人认为比较有意义的学习经验&lt;/strong&gt;
       
     
     </summary>
     
+    
+      <category term="本站必读" scheme="http://yoursite.com/categories/%E6%9C%AC%E7%AB%99%E5%BF%85%E8%AF%BB/"/>
     
     
   </entry>
