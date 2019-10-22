@@ -5,9 +5,9 @@
   
   <link href="/atom.xml" rel="self"/>
   
-  <link href="http://yoursite.com/"/>
+  <link href="http://duweikang.com/"/>
   <updated>2019-10-03T08:29:24.070Z</updated>
-  <id>http://yoursite.com/</id>
+  <id>http://duweikang.com/</id>
   
   <author>
     <name>杜惟康</name>
@@ -18,8 +18,8 @@
   
   <entry>
     <title>t</title>
-    <link href="http://yoursite.com/2019/10/03/t/"/>
-    <id>http://yoursite.com/2019/10/03/t/</id>
+    <link href="http://duweikang.com/2019/10/03/t/"/>
+    <id>http://duweikang.com/2019/10/03/t/</id>
     <published>2019-10-03T07:57:30.000Z</published>
     <updated>2019-10-03T08:29:24.070Z</updated>
     
@@ -40,8 +40,8 @@
   
   <entry>
     <title>开站首篇</title>
-    <link href="http://yoursite.com/2019/10/02/%E5%BC%80%E7%AB%99%E9%A6%96%E7%AF%87/"/>
-    <id>http://yoursite.com/2019/10/02/开站首篇/</id>
+    <link href="http://duweikang.com/2019/10/02/%E5%BC%80%E7%AB%99%E9%A6%96%E7%AF%87/"/>
+    <id>http://duweikang.com/2019/10/02/开站首篇/</id>
     <published>2019-10-02T13:57:17.000Z</published>
     <updated>2019-10-02T14:26:06.417Z</updated>
     
@@ -61,7 +61,7 @@
     </summary>
     
     
-      <category term="本站必读" scheme="http://yoursite.com/categories/%E6%9C%AC%E7%AB%99%E5%BF%85%E8%AF%BB/"/>
+      <category term="本站必读" scheme="http://duweikang.com/categories/%E6%9C%AC%E7%AB%99%E5%BF%85%E8%AF%BB/"/>
     
     
   </entry>
