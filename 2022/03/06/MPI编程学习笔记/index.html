@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html lang="zh-CN">
+<head>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 3.9.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.4.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.4.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.4.0">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.4.0" color="#222">
+  <link rel="alternate" href="/atom.xml" title="杜惟康" type="application/atom+xml">
+
+<link rel="stylesheet" href="/css/main.css?v=7.4.0">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.4.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: '',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="MPI编程学习笔记  基本概念 是基于消息传递的，不同进程不共享内存 MPI定义了若干核心库函数的语法和定义，独立于编程语言，独立于平台 *略去发展历史，主要实现版本等… SPMD（single program multiple data） 头文件 #include&amp;lt;mpi.h&amp;gt; MPI中h函数，变量，参数均以MPI_作为前缀，共有超过430个函数 只要6个函数就可以w完成所有MPI">
+<meta name="keywords" content="过去的笔记">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MPI编程学习笔记">
+<meta property="og:url" content="http://yoursite.com/2022/03/06/MPI编程学习笔记/index.html">
+<meta property="og:site_name" content="杜惟康">
+<meta property="og:description" content="MPI编程学习笔记  基本概念 是基于消息传递的，不同进程不共享内存 MPI定义了若干核心库函数的语法和定义，独立于编程语言，独立于平台 *略去发展历史，主要实现版本等… SPMD（single program multiple data） 头文件 #include&amp;lt;mpi.h&amp;gt; MPI中h函数，变量，参数均以MPI_作为前缀，共有超过430个函数 只要6个函数就可以w完成所有MPI">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://i.loli.net/2019/12/21/gEOPraqBDHLdhWu.png">
+<meta property="og:image" content="https://i.loli.net/2019/12/21/VNLzcuTJhRaYSQd.png">
+<meta property="og:image" content="https://i.loli.net/2019/12/30/obTRdZyNVCO5Mvx.png">
+<meta property="og:image" content="https://i.loli.net/2019/12/30/UQjfGvd8I9q4pRP.png">
+<meta property="og:updated_time" content="2022-03-05T17:11:21.650Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="MPI编程学习笔记">
+<meta name="twitter:description" content="MPI编程学习笔记  基本概念 是基于消息传递的，不同进程不共享内存 MPI定义了若干核心库函数的语法和定义，独立于编程语言，独立于平台 *略去发展历史，主要实现版本等… SPMD（single program multiple data） 头文件 #include&amp;lt;mpi.h&amp;gt; MPI中h函数，变量，参数均以MPI_作为前缀，共有超过430个函数 只要6个函数就可以w完成所有MPI">
+<meta name="twitter:image" content="https://i.loli.net/2019/12/21/gEOPraqBDHLdhWu.png">
+  <link rel="canonical" href="http://yoursite.com/2022/03/06/MPI编程学习笔记/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>MPI编程学习笔记 | 杜惟康</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container use-motion">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">杜惟康</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+      
+      
+      
+        
+        <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+  </ul>
+
+</nav>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+            
+
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+      <article itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block post">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2022/03/06/MPI编程学习笔记/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="杜惟康">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="杜惟康">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">MPI编程学习笔记
+
+          
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              
+                
+              
+
+              <time title="创建时间：2022-03-06 01:09:27 / 修改时间：01:11:21" itemprop="dateCreated datePublished" datetime="2022-03-06T01:09:27+08:00">2022-03-06</time>
+            </span>
+          
+            
+
+            
+          
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="mpi编程学习笔记"><a class="markdownIt-Anchor" href="#mpi编程学习笔记"></a> MPI编程学习笔记</h1>
+<h2 id="基本概念"><a class="markdownIt-Anchor" href="#基本概念"></a> 基本概念</h2>
+<p>是基于消息传递的，不同进程不共享内存</p>
+<p>MPI定义了若干核心库函数的语法和定义，独立于编程语言，独立于平台</p>
+<p>*略去发展历史，主要实现版本等…</p>
+<p>SPMD（single program multiple data）</p>
+<p>头文件 #include&lt;mpi.h&gt;</p>
+<p>MPI中h函数，变量，参数均以MPI_作为前缀，共有超过430个函数</p>
+<p>只要6个函数就可以w完成所有MPI功能</p>
+<p><img src="https://i.loli.net/2019/12/21/gEOPraqBDHLdhWu.png" alt="微信图片_20191009203055.png"></p>
+<p>分别是启动/终止MPI环境，通信器的总进程数和其中进程的编号，发送和接收消息（前四个可以作为MPI编程的起手式？）</p>
+<h2 id="发送接收消息"><a class="markdownIt-Anchor" href="#发送接收消息"></a> 发送/接收消息</h2>
+<p><img src="https://i.loli.net/2019/12/21/VNLzcuTJhRaYSQd.png" alt="微信图片_20191009203833.png"></p>
+<p>参数解释：（两个函数较为相似）</p>
+<p>buf是指针，表示收发的消息在<strong>本进程内存</strong>中的位置</p>
+<p>count表示发送/接收的消息的长度</p>
+<p>*接收的长度应当大于等于发送的长度</p>
+<p>datatype表示收发的数据类型</p>
+<p>dest表示发送消息给谁，source表示消息来自哪里</p>
+<p>tag是标签（非负整数，有上限），用来区分不同的消息</p>
+<p>Comm是通信器，即在哪个通信器里行动</p>
+<p>MPI_Status表示函数返回的通信状态，是一个结构体，可以设置为MPI_STATUS_IGNORE</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">MPI_Status</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">    <span class="keyword">int</span> MPI_SOURCE;</span><br><span class="line">    <span class="keyword">int</span> MPI_TAG;</span><br><span class="line">    <span class="keyword">int</span> MPI_ERROR;</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>可以使用<code>int MPI_Get_count(MPI_Status status,MPI_Datatype datatype,int *count)</code>函数得到接收消息的大小。</p>
+<p>如果两个进程需要进行数据交换，可以使用MPI_Sendrecv。（send和recv的整合）</p>
+<p>若交换的数据公用一个buffer，可借助MPI_Sendrecv_replace</p>
+<h2 id="死锁"><a class="markdownIt-Anchor" href="#死锁"></a> 死锁</h2>
+<p>send和recv是<strong>阻塞（blocking）通信</strong>，不成功不返回（通信过程中该进程暂停）</p>
+<p>固然可以写程序的时候小心一点，但也可以从机制上解决</p>
+<p><strong>非阻塞（non-blocking）通信</strong>：提交上去后不管结果，后台执行通信。</p>
+<p>由函数MPI_Isend和MPI_Irecv实现</p>
+<p>与send和recv参数形式基本相似，不再有Status（因为无法立刻得到）</p>
+<p>两边都多出了MPI_Request参数，用来标记通信任务</p>
+<p>取消非阻塞通信（开销较大）<code>int MPI_Cancel(MPI_Request *request)</code></p>
+<p>检测非阻塞通信（开销较小<code>）int MPI_Test(MPI_Request *request, int *flag, MPI_Status *status)</code>其中flag为0表示未结束</p>
+<p>等待非阻塞通信结束  <code>int MPI_Wait(MPI_Request *request, MPI_Status *status)</code></p>
+<p>注意在非阻塞通信未结束时，要小心使用buf中的数据：</p>
+<p><strong>不要修改buf中的发送数据，不要使用buf中的接收数据</strong></p>
+<p>非阻塞通信还可以批量检测/控制</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">MPI_Testall</span><span class="params">(<span class="keyword">int</span> count, MPI_Request requests[], <span class="keyword">int</span> *flag,</span></span></span><br><span class="line"><span class="function"><span class="params">MPI_Status statuses[])</span></span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">MPI_Waitall</span><span class="params">(<span class="keyword">int</span> count, MPI_Request requests[], MPI_Status</span></span></span><br><span class="line"><span class="function"><span class="params">statuses[])</span></span></span><br></pre></td></tr></table></figure>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">MPI_Testany</span><span class="params">(<span class="keyword">int</span> count, MPI_Request requests[], <span class="keyword">int</span> *index, <span class="keyword">int</span> *</span></span></span><br><span class="line"><span class="function"><span class="params">flag, MPI_Status *status)</span></span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">MPI_Waitany</span><span class="params">(<span class="keyword">int</span> count, MPI_Request requests[], <span class="keyword">int</span> *index,</span></span></span><br><span class="line"><span class="function"><span class="params">MPI_Status *status)</span></span></span><br></pre></td></tr></table></figure>
+<p>即一次检测或等待所有/任意一个进程是否完成了非阻塞通信。类似的还有testsome , waitsome等</p>
+<p>因此，在使用非阻塞通信时，程序收/发的顺序将不会产生太大的影响。（但还是有可能会影响程序运行的时间，例如wait的顺序等）</p>
+<p>MPI墙钟时间：</p>
+<p>返回当前进程的时钟时间 <code>double MPI_Wtime()</code></p>
+<p>返回MPI_Wtime 的时钟刻度：<code>double MPI_Wtick()</code></p>
+<h2 id="mpi集合通信"><a class="markdownIt-Anchor" href="#mpi集合通信"></a> MPI集合通信</h2>
+<p>MPI集合通信是指涉及到通信器中所有进程的通信，主要分为同步，数据移动，规约。</p>
+<p>通信器中所有进程必须同时调用该操作，不需要指定tag，所有的集合通信都是某种意义的同步操作。</p>
+<p><code>int MPI_Barrier(MPI_Comm comm)</code></p>
+<p>MPI栅栏同步：通信器中所有进程互相等待至某个同步点。</p>
+<p><code>int MPI_Bcast(void *buf, int count, MPI_Datatype datatype, int source, MPI_Comm comm)</code></p>
+<p>广播（broadcast）：将一个数据发放给所有的进程</p>
+<p><code>int MPI_Reduce(void *sendbuf, void *recvbuf, int count, MPI_Datatype datatype, MPI_Op op, int target, MPI_Comm comm)</code></p>
+<p>规约（reduce）：对所有进程的某个数据进行一次规约操作</p>
+<p>还有分发（Scatter）和集中（Gather）</p>
+<p><img src="https://i.loli.net/2019/12/30/obTRdZyNVCO5Mvx.png" alt="微信图片_20191230164808.png"></p>
+<p>还有各种多对多通信，例如全规约，前缀和，全集中等等。</p>
+<h2 id="点对点通信的实践机制"><a class="markdownIt-Anchor" href="#点对点通信的实践机制"></a> 点对点通信的实践机制</h2>
+<p><img src="https://i.loli.net/2019/12/30/UQjfGvd8I9q4pRP.png" alt="微信图片_20191230165858.png"></p>
+<p>借助底层的缓冲区（buffer），可以有不同的实现方式。</p>
+<p>例如发送函数如果将数据先发送到缓冲区，则不需要等待就可以提前返回，因为后边的过程已经与user data无关了。</p>
+<p>发送函数分为同步模式Ssend，就绪模式Rsend，缓冲模式Bsend，语法与普通的Send完全一样。</p>
+<p>同步模式是指无论接收端是否启动接收，发送端都可以开启发送。但只有在接收端启动接收后发送端才返回。发送端返回表示缓冲区已经可用，并且接收端已经到达了某程序点（进行了握手同步）</p>
+<p>就绪模式是仅在接受操作启动且就绪的情况下才发送数据否则报错。语义上和同步模式一样，但避免了额外的缓冲区操作和握手操作。</p>
+<p>缓冲模式是发送端把数据拷贝到用户提供的临时缓冲区，函数返回时发送缓冲区重新可用。</p>
+<p>缓冲发送的集体使用需要显示的指定和释放内部缓冲区，缓冲区的大小不小于发送数据的总空间，并且还需要加上额外的OVERHEAD长度。</p>
+<p>而对于标准模式的Send函数，系统会灵活选择，对于短消息一般采用缓冲模式，对长消息一般采用同步模式。</p>
+<h3 id="点对点通信的底层协议protocol"><a class="markdownIt-Anchor" href="#点对点通信的底层协议protocol"></a> 点对点通信的底层协议(protocol)</h3>
+<p>急迫协议：发送方就绪就可以发送数据</p>
+<p>汇合协议：双方均就绪才发送数据</p>
+<p>两种协议相对比，急迫协议引入了底层缓冲开销，减小同步开销，适合短消息传输。</p>
+<p>而汇合协议可以避免缓冲，引入同步开销，适合长消息传输。</p>
+<h2 id="通信器与进程组"><a class="markdownIt-Anchor" href="#通信器与进程组"></a> 通信器与进程组</h2>
+<p>默认的通信器MPI_COMM_WORLD包含了所有的进程，而有时我们只想对通信器里的部分进程进行集合通信。</p>
+<p>因此可以进行通信器的分裂</p>
+<p><code>int MPI_Comm_split(MPI_Comm comm, int color, int key, MPI_Comm*newcomm)</code></p>
+<p>分裂后原来的通信器不会消失，color决定属于哪个通信器，key觉得rank</p>
+<p>每个通信器包含一个唯一的ID，以及对应一个进程组，采用以下方式获取通信器的进程组</p>
+<p><code>int MPI_Comm_group(MPI_Comm comm, MPI_Group* group)</code></p>
+<p>进程组包含了该通信器的进程信息，因此可以获取rank 和size。</p>
+<p>进程组不能用来通信，但可以用来创建新的进程组，可以做交和并或指定某些进程等。</p>
+<p>因此一个进程可以属于不同的进程组/通信器。</p>
+<p>而基于进程组可以创建通信器。</p>
+
+    </div>
+
+    
+    
+    
+        
+      
+
+      <footer class="post-footer">
+          
+            
+          
+          <div class="post-tags">
+            
+              <a href="/tags/过去的笔记/" rel="tag"># 过去的笔记</a>
+            
+          </div>
+        
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+              
+                <a href="/2019/10/03/t/" rel="next" title="t">
+                  <i class="fa fa-chevron-left"></i> t
+                </a>
+              
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+              
+            </div>
+          </div>
+        
+      </footer>
+    
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+        
+        
+        
+        
+      
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#mpi编程学习笔记"><span class="nav-number">1.</span> <span class="nav-text"> MPI编程学习笔记</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#基本概念"><span class="nav-number">1.1.</span> <span class="nav-text"> 基本概念</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#发送接收消息"><span class="nav-number">1.2.</span> <span class="nav-text"> 发送/接收消息</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#死锁"><span class="nav-number">1.3.</span> <span class="nav-text"> 死锁</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#mpi集合通信"><span class="nav-number">1.4.</span> <span class="nav-text"> MPI集合通信</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#点对点通信的实践机制"><span class="nav-number">1.5.</span> <span class="nav-text"> 点对点通信的实践机制</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#点对点通信的底层协议protocol"><span class="nav-number">1.5.1.</span> <span class="nav-text"> 点对点通信的底层协议(protocol)</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#通信器与进程组"><span class="nav-number">1.6.</span> <span class="nav-text"> 通信器与进程组</span></a></li></ol></li></ol></div>
+        
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image"
+      src="/images/avatar.png"
+      alt="杜惟康">
+  <p class="site-author-name" itemprop="name">杜惟康</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">3</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        <span class="site-state-item-count">1</span>
+        <span class="site-state-item-name">分类</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        <span class="site-state-item-count">1</span>
+        <span class="site-state-item-name">标签</span>
+        </a>
+      </div>
+    
+  </nav>
+</div>
+  <div class="feed-link motion-element">
+    <a href="/atom.xml" rel="alternate">
+      <i class="fa fa-rss"></i>RSS
+    </a>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2019 – <span itemprop="copyrightYear">2022</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">杜惟康</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.9.0</div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.4.0</div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js?v=3.1.0"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+<script src="/js/utils.js?v=7.4.0"></script><script src="/js/motion.js?v=7.4.0"></script>
+<script src="/js/schemes/pisces.js?v=7.4.0"></script>
+<script src="/js/next-boot.js?v=7.4.0"></script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

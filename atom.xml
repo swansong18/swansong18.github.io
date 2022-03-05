@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>杜惟康</title>
+  
+  
+  <link href="/atom.xml" rel="self"/>
+  
+  <link href="http://yoursite.com/"/>
+  <updated>2022-03-05T17:11:21.650Z</updated>
+  <id>http://yoursite.com/</id>
+  
+  <author>
+    <name>杜惟康</name>
+    
+  </author>
+  
+  <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>MPI编程学习笔记</title>
+    <link href="http://yoursite.com/2022/03/06/MPI%E7%BC%96%E7%A8%8B%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+    <id>http://yoursite.com/2022/03/06/MPI编程学习笔记/</id>
+    <published>2022-03-05T17:09:27.000Z</published>
+    <updated>2022-03-05T17:11:21.650Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="mpi编程学习笔记"><a class="markdownIt-Anchor" href="#mpi编程学习笔记"></a> MPI编程学习笔记</h1><h2 id="基本概念"><a class="markdownIt-Anchor" href="#基本概念"></a> 基本概念</h2><p>是基于消息传递的，不同进程不共享内存</p><p>MPI定义了若干核心库函数的语法和定义，独立于编程语言，独立于平台</p><p>*略去发展历史，主要实现版本等…</p><p>SPMD（single program multiple data）</p><p>头文件 #include&lt;mpi.h&gt;</p><p>MPI中h函数，变量，参数均以MPI_作为前缀，共有超过430个函数</p><p>只要6个函数就可以w完成所有MPI功能</p><p><img src="https://i.loli.net/2019/12/21/gEOPraqBDHLdhWu.png" alt="微信图片_20191009203055.png"></p><p>分别是启动/终止MPI环境，通信器的总进程数和其中进程的编号，发送和接收消息（前四个可以作为MPI编程的起手式？）</p><h2 id="发送接收消息"><a class="markdownIt-Anchor" href="#发送接收消息"></a> 发送/接收消息</h2><p><img src="https://i.loli.net/2019/12/21/VNLzcuTJhRaYSQd.png" alt="微信图片_20191009203833.png"></p><p>参数解释：（两个函数较为相似）</p><p>buf是指针，表示收发的消息在<strong>本进程内存</strong>中的位置</p><p>count表示发送/接收的消息的长度</p><p>*接收的长度应当大于等于发送的长度</p><p>datatype表示收发的数据类型</p><p>dest表示发送消息给谁，source表示消息来自哪里</p><p>tag是标签（非负整数，有上限），用来区分不同的消息</p><p>Comm是通信器，即在哪个通信器里行动</p><p>MPI_Status表示函数返回的通信状态，是一个结构体，可以设置为MPI_STATUS_IGNORE</p><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">MPI_Status</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">    <span class="keyword">int</span> MPI_SOURCE;</span><br><span class="line">    <span class="keyword">int</span> MPI_TAG;</span><br><span class="line">    <span class="keyword">int</span> MPI_ERROR;</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><p>可以使用<code>int MPI_Get_count(MPI_Status status,MPI_Datatype datatype,int *count)</code>函数得到接收消息的大小。</p><p>如果两个进程需要进行数据交换，可以使用MPI_Sendrecv。（send和recv的整合）</p><p>若交换的数据公用一个buffer，可借助MPI_Sendrecv_replace</p><h2 id="死锁"><a class="markdownIt-Anchor" href="#死锁"></a> 死锁</h2><p>send和recv是<strong>阻塞（blocking）通信</strong>，不成功不返回（通信过程中该进程暂停）</p><p>固然可以写程序的时候小心一点，但也可以从机制上解决</p><p><strong>非阻塞（non-blocking）通信</strong>：提交上去后不管结果，后台执行通信。</p><p>由函数MPI_Isend和MPI_Irecv实现</p><p>与send和recv参数形式基本相似，不再有Status（因为无法立刻得到）</p><p>两边都多出了MPI_Request参数，用来标记通信任务</p><p>取消非阻塞通信（开销较大）<code>int MPI_Cancel(MPI_Request *request)</code></p><p>检测非阻塞通信（开销较小<code>）int MPI_Test(MPI_Request *request, int *flag, MPI_Status *status)</code>其中flag为0表示未结束</p><p>等待非阻塞通信结束  <code>int MPI_Wait(MPI_Request *request, MPI_Status *status)</code></p><p>注意在非阻塞通信未结束时，要小心使用buf中的数据：</p><p><strong>不要修改buf中的发送数据，不要使用buf中的接收数据</strong></p><p>非阻塞通信还可以批量检测/控制</p><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">MPI_Testall</span><span class="params">(<span class="keyword">int</span> count, MPI_Request requests[], <span class="keyword">int</span> *flag,</span></span></span><br><span class="line"><span class="function"><span class="params">MPI_Status statuses[])</span></span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">MPI_Waitall</span><span class="params">(<span class="keyword">int</span> count, MPI_Request requests[], MPI_Status</span></span></span><br><span class="line"><span class="function"><span class="params">statuses[])</span></span></span><br></pre></td></tr></table></figure><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">MPI_Testany</span><span class="params">(<span class="keyword">int</span> count, MPI_Request requests[], <span class="keyword">int</span> *index, <span class="keyword">int</span> *</span></span></span><br><span class="line"><span class="function"><span class="params">flag, MPI_Status *status)</span></span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">MPI_Waitany</span><span class="params">(<span class="keyword">int</span> count, MPI_Request requests[], <span class="keyword">int</span> *index,</span></span></span><br><span class="line"><span class="function"><span class="params">MPI_Status *status)</span></span></span><br></pre></td></tr></table></figure><p>即一次检测或等待所有/任意一个进程是否完成了非阻塞通信。类似的还有testsome , waitsome等</p><p>因此，在使用非阻塞通信时，程序收/发的顺序将不会产生太大的影响。（但还是有可能会影响程序运行的时间，例如wait的顺序等）</p><p>MPI墙钟时间：</p><p>返回当前进程的时钟时间 <code>double MPI_Wtime()</code></p><p>返回MPI_Wtime 的时钟刻度：<code>double MPI_Wtick()</code></p><h2 id="mpi集合通信"><a class="markdownIt-Anchor" href="#mpi集合通信"></a> MPI集合通信</h2><p>MPI集合通信是指涉及到通信器中所有进程的通信，主要分为同步，数据移动，规约。</p><p>通信器中所有进程必须同时调用该操作，不需要指定tag，所有的集合通信都是某种意义的同步操作。</p><p><code>int MPI_Barrier(MPI_Comm comm)</code></p><p>MPI栅栏同步：通信器中所有进程互相等待至某个同步点。</p><p><code>int MPI_Bcast(void *buf, int count, MPI_Datatype datatype, int source, MPI_Comm comm)</code></p><p>广播（broadcast）：将一个数据发放给所有的进程</p><p><code>int MPI_Reduce(void *sendbuf, void *recvbuf, int count, MPI_Datatype datatype, MPI_Op op, int target, MPI_Comm comm)</code></p><p>规约（reduce）：对所有进程的某个数据进行一次规约操作</p><p>还有分发（Scatter）和集中（Gather）</p><p><img src="https://i.loli.net/2019/12/30/obTRdZyNVCO5Mvx.png" alt="微信图片_20191230164808.png"></p><p>还有各种多对多通信，例如全规约，前缀和，全集中等等。</p><h2 id="点对点通信的实践机制"><a class="markdownIt-Anchor" href="#点对点通信的实践机制"></a> 点对点通信的实践机制</h2><p><img src="https://i.loli.net/2019/12/30/UQjfGvd8I9q4pRP.png" alt="微信图片_20191230165858.png"></p><p>借助底层的缓冲区（buffer），可以有不同的实现方式。</p><p>例如发送函数如果将数据先发送到缓冲区，则不需要等待就可以提前返回，因为后边的过程已经与user data无关了。</p><p>发送函数分为同步模式Ssend，就绪模式Rsend，缓冲模式Bsend，语法与普通的Send完全一样。</p><p>同步模式是指无论接收端是否启动接收，发送端都可以开启发送。但只有在接收端启动接收后发送端才返回。发送端返回表示缓冲区已经可用，并且接收端已经到达了某程序点（进行了握手同步）</p><p>就绪模式是仅在接受操作启动且就绪的情况下才发送数据否则报错。语义上和同步模式一样，但避免了额外的缓冲区操作和握手操作。</p><p>缓冲模式是发送端把数据拷贝到用户提供的临时缓冲区，函数返回时发送缓冲区重新可用。</p><p>缓冲发送的集体使用需要显示的指定和释放内部缓冲区，缓冲区的大小不小于发送数据的总空间，并且还需要加上额外的OVERHEAD长度。</p><p>而对于标准模式的Send函数，系统会灵活选择，对于短消息一般采用缓冲模式，对长消息一般采用同步模式。</p><h3 id="点对点通信的底层协议protocol"><a class="markdownIt-Anchor" href="#点对点通信的底层协议protocol"></a> 点对点通信的底层协议(protocol)</h3><p>急迫协议：发送方就绪就可以发送数据</p><p>汇合协议：双方均就绪才发送数据</p><p>两种协议相对比，急迫协议引入了底层缓冲开销，减小同步开销，适合短消息传输。</p><p>而汇合协议可以避免缓冲，引入同步开销，适合长消息传输。</p><h2 id="通信器与进程组"><a class="markdownIt-Anchor" href="#通信器与进程组"></a> 通信器与进程组</h2><p>默认的通信器MPI_COMM_WORLD包含了所有的进程，而有时我们只想对通信器里的部分进程进行集合通信。</p><p>因此可以进行通信器的分裂</p><p><code>int MPI_Comm_split(MPI_Comm comm, int color, int key, MPI_Comm*newcomm)</code></p><p>分裂后原来的通信器不会消失，color决定属于哪个通信器，key觉得rank</p><p>每个通信器包含一个唯一的ID，以及对应一个进程组，采用以下方式获取通信器的进程组</p><p><code>int MPI_Comm_group(MPI_Comm comm, MPI_Group* group)</code></p><p>进程组包含了该通信器的进程信息，因此可以获取rank 和size。</p><p>进程组不能用来通信，但可以用来创建新的进程组，可以做交和并或指定某些进程等。</p><p>因此一个进程可以属于不同的进程组/通信器。</p><p>而基于进程组可以创建通信器。</p>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;h1 id=&quot;mpi编程学习笔记&quot;&gt;&lt;a class=&quot;markdownIt-Anchor&quot; href=&quot;#mpi编程学习笔记&quot;&gt;&lt;/a&gt; MPI编程学习笔记&lt;/h1&gt;
+&lt;h2 id=&quot;基本概念&quot;&gt;&lt;a class=&quot;markdownIt-Anchor&quot; href=&quot;#基本概念
+      
+    
+    </summary>
+    
+    
+    
+      <category term="过去的笔记" scheme="http://yoursite.com/tags/%E8%BF%87%E5%8E%BB%E7%9A%84%E7%AC%94%E8%AE%B0/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>t</title>
+    <link href="http://yoursite.com/2019/10/03/t/"/>
+    <id>http://yoursite.com/2019/10/03/t/</id>
+    <published>2019-10-03T07:57:30.000Z</published>
+    <updated>2022-03-05T16:49:15.403Z</updated>
+    
+    <content type="html"><![CDATA[<p class="katex-block"><span class="katex-display"><span class="katex"><span class="katex-mathml"><math><semantics><mrow><msup><mi>x</mi><msup><mi>y</mi><mi>z</mi></msup></msup><mo>=</mo><mo stretchy="false">(</mo><mn>1</mn><mo>+</mo><msup><mi>e</mi><mi>x</mi></msup><msup><mo stretchy="false">)</mo><mrow><mo>−</mo><mn>2</mn><mi>x</mi><msup><mi>y</mi><mi>w</mi></msup></mrow></msup><mspace linebreak="newline"></mspace><msup><mi>a</mi><msup><mi>b</mi><msup><mi>c</mi><mi>d</mi></msup></msup></msup><mo>=</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">x^{y^z}=(1+e^x)^{-2xy^w} \\a^{b^{c^d}}=1</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.92998em;vertical-align:0em;"></span><span class="mord"><span class="mord mathdefault">x</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.92998em;"><span style="top:-3.1130000000000004em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight"><span class="mord mathdefault mtight" style="margin-right:0.03588em;">y</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.7385428571428572em;"><span style="top:-2.931em;margin-right:0.07142857142857144em;"><span class="pstrut" style="height:2.5em;"></span><span class="sizing reset-size3 size1 mtight"><span class="mord mathdefault mtight" style="margin-right:0.04398em;">z</span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">(</span><span class="mord">1</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:1.17998em;vertical-align:-0.25em;"></span><span class="mord"><span class="mord mathdefault">e</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.7143919999999999em;"><span style="top:-3.113em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight">x</span></span></span></span></span></span></span></span><span class="mclose"><span class="mclose">)</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.92998em;"><span style="top:-3.1130000000000004em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">−</span><span class="mord mtight">2</span><span class="mord mathdefault mtight">x</span><span class="mord mtight"><span class="mord mathdefault mtight" style="margin-right:0.03588em;">y</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.7385428571428572em;"><span style="top:-2.931em;margin-right:0.07142857142857144em;"><span class="pstrut" style="height:2.5em;"></span><span class="sizing reset-size3 size1 mtight"><span class="mord mathdefault mtight" style="margin-right:0.02691em;">w</span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span><span class="mspace newline"></span><span class="base"><span class="strut" style="height:1.26392em;vertical-align:0em;"></span><span class="mord"><span class="mord mathdefault">a</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:1.26392em;"><span style="top:-3.2639199999999997em;margin-right:0.05em;"><span class="pstrut" style="height:2.85092em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight"><span class="mord mathdefault mtight">b</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:1.2156em;"><span style="top:-3.2156000000000002em;margin-right:0.07142857142857144em;"><span class="pstrut" style="height:2.7846em;"></span><span class="sizing reset-size3 size1 mtight"><span class="mord mtight"><span class="mord mtight"><span class="mord mathdefault mtight">c</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:1.09844em;"><span style="top:-3.09844em;margin-right:0.1em;"><span class="pstrut" style="height:2.69444em;"></span><span class="mord mathdefault mtight">d</span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">1</span></span></span></span></span></p>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;p class=&quot;katex-block&quot;&gt;&lt;span class=&quot;katex-display&quot;&gt;&lt;span class=&quot;katex&quot;&gt;&lt;span class=&quot;katex-mathml&quot;&gt;&lt;math&gt;&lt;semantics&gt;&lt;mrow&gt;&lt;msup&gt;&lt;mi&gt;x&lt;/mi&gt;&lt;ms
+      
+    
+    </summary>
+    
+    
+    
+  </entry>
+  
+  <entry>
+    <title>开站首篇</title>
+    <link href="http://yoursite.com/2019/10/02/%E5%BC%80%E7%AB%99%E9%A6%96%E7%AF%87/"/>
+    <id>http://yoursite.com/2019/10/02/开站首篇/</id>
+    <published>2019-10-02T13:57:17.000Z</published>
+    <updated>2022-03-05T16:49:15.403Z</updated>
+    
+    <content type="html"><![CDATA[<p>本站开设于2019年国庆之际。</p><p>网站的诸多设置还有很多没调整完善，但还是先匆匆开个头。</p><p>我将这个网站大致定位为自己的个人博客，将会主要包含以下几方面的内容：</p><ol><li><strong>个人认为比较有意义的学习经验</strong>。<br>如今是遇事不决问搜索引擎的年代，但搜索引擎还远远不够万能。当你被一个问题所困时，一篇个人博主的优质solution有如天降甘霖。因此我也试图记录下一些有用的东西供大家参考。<br>这也是一个促进自己学习的过程，毕竟只有自己真正做成了某件事/解决了某个问题才能有的可写。（<s>换句话说，如果犯懒了就没得可写</s>）</li><li><strong>我自己的一些思考</strong><br>其实就是满足自己有时想写点东西的欲望，虽然自知写作水平拙劣，但随便写写自我满足一下也足够了。我了解的或者关心的内容或许都会写。</li><li><strong>实用的资源整理</strong><br>网上能搜到的东西质量参差不齐，整理/收藏优质内容也是一件有意义的事情。</li></ol><p>时值国庆，整个北京都处在重大活动的氛围之中。我可能是个比较“冷”的人，既没有“敢教日月换新天”的豪情壮志，也没有世界一流大学“为祖国健康工作五十年”的奉献精神。不过身边很多朋友都用不同的方式参与了这场盛大的庆典，付出了很多努力，我对他们由衷赞赏。对于每一位有着崇高理想并为之奋斗的人，我由衷的敬佩。</p><p>节日是让人们“俱怀逸兴壮思飞”的特殊日子，再激昂的口号也都要回归雄关漫道才是正途。于我而言，能为他人谋些福利，便足以为乐事。</p><p>愿与各位朋友相约三十年后，再看大好山河。</p><p><em>写于2019年国庆</em></p>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;p&gt;本站开设于2019年国庆之际。&lt;/p&gt;
+&lt;p&gt;网站的诸多设置还有很多没调整完善，但还是先匆匆开个头。&lt;/p&gt;
+&lt;p&gt;我将这个网站大致定位为自己的个人博客，将会主要包含以下几方面的内容：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;个人认为比较有意义的学习经验&lt;/strong&gt;
+      
+    
+    </summary>
+    
+    
+      <category term="本站必读" scheme="http://yoursite.com/categories/%E6%9C%AC%E7%AB%99%E5%BF%85%E8%AF%BB/"/>
+    
+    
+  </entry>
+  
+</feed>
